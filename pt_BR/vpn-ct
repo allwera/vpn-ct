@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+# vpn-ct 0.2 04/05/2019
+VCTVER="0.2"
+  
+#	Este é um simples utilitário para controlar o ProtonVPN.
+#	Você deve instalar e configurar o protonvpn-cli para que
+#	esta ferramenta funcione.
+
+#	Porque o ProtonVPN requer que as operações sejam feitas
+#	com privilégios de root, o script deve ser rodado com sudo.
+
+#	repositório no GitHub: github.com/allwera/vpn-ct
+
+
+	# Instruções
+
+vct_splash ()
+{
+	echo
+	echo " [vpn-ct] vpn-ct $VCTVER: Controlador para protonvpn-cli"
+	echo " [vpn-ct] Opções: [R]ec. [D]esc. [L]ast" 
+	echo " [vpn-ct] [M]enu [F]astest [C]ountry [S]air e [H]elp para mais."
+	echo " [vpn-ct] Pressione [Enter] para obter o status."
+	echo
+}
+
+	# Entrada de dados
+
+vct_leitura ()
+{
+	if [[ $VCTMINT -eq 1 ]]
+	then
+		echo " [vpn-ct] Opção inválida. Utilize somente maiúsculas."
+		echo
+		VCTMINT=0
+	fi
+	read -p "	[vpn-ct] Pronto: " VCTIPT
+}
+
+	# Marcação de hora
+
+vct_data ()
+{
+	clear
+	((++VCTITER))
+	echo
+	echo "	[vpn-ct]	$(date) :: Iteração $VCTITER"
+	echo
+}
+
+	# Chamada das funções principais
+
+vct_strap ()
+{
+	echo
+	vct_splash
+	vct_leitura
+	vct_caminhos
+}
+
+
+	# Condicionais e saídas de dados
+
+vct_caminhos ()
+{
+	if [[ -z $VCTIPT ]]
+	then
+		$VCTIPT=""
+		while [[ -z $VCTIPT ]]
+		do
+			vct_data
+			protonvpn-cli --status
+			vct_strap
+		done
+	fi
+
+	if [[ $VCTIPT =~ [a-z] ]]
+	then
+		vct_data
+		VCTMINT=1
+		vct_strap
+	fi
+
+	if [[ $VCTIPT != "S" && ! -z $VCTIPT ]]
+	then
+		vct_data
+		protonvpn-cli --$(echo $VCTIPT | tr '[:upper:]' '[:lower:]')
+		vct_strap
+	fi
+
+
+	if [[ $VCTIPT == "S" ]]
+	then
+		exit 0
+	fi
+}
+
+	# Execução
+
+vct_strap0 ()
+{
+echo
+echo "[vpn-ct] vpn-ct $VCTVER inicializando..."
+echo "[vpn-ct] Testando permissões..."
+VCTSUDO=$(whoami)
+if [[ $VCTSUDO == "root" ]]
+then
+	echo "[OK] Autenticação bem sucedida."
+else
+	echo "[vpn-ct] Permissão negada. Use sudo para rodar o programa."
+	exit 13
+fi
+
+echo "[vpn-ct] Consulte o arquivo LEIAME para mais instruções."
+}
+
+vct_strap0
+vct_strap

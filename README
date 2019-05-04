@@ -1,0 +1,68 @@
+
+
+
+
+		vpn-ct 0.2 - 04/05/2019
+
+		vpn-ct is a bash wrapper to control protonvpn-cli. 
+
+		it requires protonvpn-cli, installed and configured
+
+		This simple script should run without problems
+		in any system with the GNU coreutils and
+		the POSIX standards.
+
+		repo: github.com/allwera/vpn-ct
+
+		The script will pass the received instructions
+		to the end of the "protonvpn-cli --" string,
+		except for the letter Q, which quits, and for
+		an empty input, which allows you to get the
+		current VPN status by just pressing [Enter].
+
+		You may therefore use any letter you want
+		so long as it matches one of the options
+		listed when you input H, calling the help
+		dialog with the full set of options.
+
+				[  Installation  ]
+
+		If you are familiar with git, you can download the
+		script in your current directory using the command:
+
+			git clone https://github.com/allwera/vpn-ct
+	
+		You will get two directories, and if you are reading
+		this far you probably want the en_US one. Inside is
+		the vpn-ct file.
+
+		You will need to grant execute permissions with chmod:
+
+			chmod +x vpn-ct
+
+		And now you can run the script:
+
+			sudo bash vpn-ct
+
+		If you want to execute it from any terminal,
+		copy it to your bin folder:
+
+			sudo cp vpn-ct /usr/bin/vpn-ct
+
+		And you will be able to execute it with "sudo vpn-ct"
+		
+		If you are having issues executing, check the
+		file permissions using ls -l and make sure you
+		have the appropriate permissions.
+
+				[  License  ]
+
+		The code is available under the GNU GPL v.3.0.
+
+		Bear in mind that this is just a simple script with
+		NO WARRANTY and that there is NO affiliation whatsoever
+		between the development of this wrapper and ProtonVPN AG,
+		Proton Technologies AG, CERN or ProtonMail, to whom here
+		is a thank you note for providing public VPN worldwide.
+
+

@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+# vpn-ct 0.2 04/05/2019
+VCTVER="0.2"
+  
+#	This is a simple bash utility to control ProtonVPN.
+#	You must have protonvpn-cli installed and configured.
+
+#	Because protonvpn-cli requires most commands to be run
+#	as root, this script must be run with sudo
+
+#	GitHub repo: github.com/allwera/vpn-ct
+
+
+	# Instructions
+
+vct_splash ()
+{
+	echo
+	echo " [vpn-ct] vpn-ct $VCTVER: A protonvpn-cli wrapper."
+	echo " [vpn-ct] Options: [R]ec. [D]isc. [L]ast"
+	echo " [vpn-ct] [M]enu [F]astest [C]ountry [Q]uit and [H]elp for more." 
+	echo " [vpn-ct] Press [Enter] to get status."
+	echo
+}
+
+	# Input
+
+vct_leitura ()
+{
+	if [[ $VCTMINT -eq 1 ]]
+	then
+		echo " [vpn-ct] You must type in uppercase."
+		echo
+		VCTMINT=0
+	fi
+	read -p "	[vpn-ct] Ready: " VCTIPT
+}
+
+	# Timestamping
+
+vct_data ()
+{
+	clear
+	((++VCTITER))
+	echo
+	echo "	[vpn-ct]	$(date) :: Iteration $VCTITER"
+	echo
+}
+
+	# Main functions call
+
+vct_strap ()
+{
+	echo
+	vct_splash
+	vct_leitura
+	vct_caminhos
+}
+
+	# If statements and output
+
+vct_caminhos ()
+{
+	if [[ -z $VCTIPT ]]
+	then
+		$VCTIPT=""
+		while [[ -z $VCTIPT ]]
+		do
+			vct_data
+			protonvpn-cli --status
+			vct_strap
+		done
+	fi
+
+	if [[ $VCTIPT =~ [a-z] ]]
+	then
+		vct_data
+		VCTMINT=1
+		vct_strap
+	fi
+
+	if [[ $VCTIPT != "Q" && ! -z $VCTIPT ]]
+	then
+		vct_data
+		protonvpn-cli --$(echo $VCTIPT | tr '[:upper:]' '[:lower:]')
+		vct_strap
+	fi
+
+
+	if [[ $VCTIPT == "Q" ]]
+	then
+		exit 0
+	fi
+}
+
+	# Execution
+
+vct_strap0 ()
+{
+echo
+echo "[vpn-ct] vpn-ct $VCTVER starting..."
+echo "[vpn-ct] Testing permissions..."
+VCTSUDO=$(whoami)
+if [[ $VCTSUDO == "root" ]]
+then
+	echo "[OK] Permissions are granted."
+else
+	echo "[ERROR] Permission denied. Please run script with sudo."
+	exit 13
+fi
+
+echo "[vpn-ct] See the README file for further instruction."
+}
+
+vct_strap0
+vct_strap
